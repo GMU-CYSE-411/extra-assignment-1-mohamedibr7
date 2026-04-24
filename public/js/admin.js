@@ -1,3 +1,26 @@
+function renderAdminUsers(users) {
+  const tbody = document.getElementById("admin-users");
+  tbody.replaceChildren();
+
+  for (const entry of users) {
+    const row = document.createElement("tr");
+
+    for (const value of [
+      entry.id,
+      entry.username,
+      entry.role,
+      entry.displayName,
+      entry.noteCount
+    ]) {
+      const cell = document.createElement("td");
+      cell.textContent = String(value);
+      row.appendChild(cell);
+    }
+
+    tbody.appendChild(row);
+  }
+}
+
 (async function bootstrapAdmin() {
   try {
     const user = await loadCurrentUser();
@@ -8,26 +31,14 @@
     }
 
     if (user.role !== "admin") {
-      document.getElementById("admin-warning").textContent =
-        "The client says this is not your area, but the page still tries to load admin data.";
-    } else {
-      document.getElementById("admin-warning").textContent = "Authenticated as admin.";
+      document.getElementById("admin-warning").textContent = "Admin access required.";
+      return;
     }
 
+    document.getElementById("admin-warning").textContent = "Authenticated as admin.";
+
     const result = await api("/api/admin/users");
-    document.getElementById("admin-users").innerHTML = result.users
-      .map(
-        (entry) => `
-          <tr>
-            <td>${entry.id}</td>
-            <td>${entry.username}</td>
-            <td>${entry.role}</td>
-            <td>${entry.displayName}</td>
-            <td>${entry.noteCount}</td>
-          </tr>
-        `
-      )
-      .join("");
+    renderAdminUsers(result.users);
   } catch (error) {
     document.getElementById("admin-warning").textContent = error.message;
   }
