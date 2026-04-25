@@ -334,7 +334,7 @@ async function createApp() {
     const displayName = String(request.body.displayName || "").trim();
     const statusMessage = String(request.body.statusMessage || "");
     const requestedTheme = String(request.body.theme || "classic");
-    const allowedThemes = new Set(["classic", "dark", "light"]);
+    const allowedThemes = new Set(["classic", "ocean", "forest"]);
     const theme = allowedThemes.has(requestedTheme) ? requestedTheme : "classic";
     const emailOptIn = request.body.emailOptIn ? 1 : 0;
 
